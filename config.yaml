@@ -7,4 +7,4 @@ ticker:
   exchange: default
   fiatcurrency: usd,eur,gbp
   sparklinedays: 7
-  updatefrequency: 120
+  updatefrequency: 600
