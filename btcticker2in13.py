@@ -126,7 +126,7 @@ def makeSpark(pricestack):
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
     x = pricestack-np.mean(pricestack)
 
-    fig, ax = plt.subplots(1,1,figsize=(10,3))
+    fig, ax = plt.subplots(1,1,figsize=(11,4))
     plt.plot(x, color='k', linewidth=6)
     plt.plot(len(x)-1, x[-1], color='r', marker='o')
 
@@ -165,13 +165,13 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
         tokenimage = Image.open(tokenfilename)
-        tokenimage = tokenimage.resize((50, 50), Image.LANCZOS)
+        tokenimage = tokenimage.resize((60, 60), Image.LANCZOS)
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         rawimage = requests.get(tokenimageurl).json()
         tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
-        resize = 50,50
+        resize = 60,60
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
         new_image.paste(tokenimage, (10, 10), tokenimage)   
@@ -191,7 +191,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
-        draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
+        draw.text((110,80),str(days_ago)+"day",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
         draw.text((15,200),symbolstring+pricenowstring,font =font,fill = 0)
@@ -214,8 +214,8 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         draw.text((0,85),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
-        image.paste(sparkbitmap,(70,0))
-        image.paste(tokenimage, (10,10))
+        image.paste(sparkbitmap,(60,0))
+        image.paste(tokenimage, (0,0))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
         draw.text((140,90),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
