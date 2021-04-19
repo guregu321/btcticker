@@ -9,6 +9,8 @@ import logging
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in13_V2
 import time
+os.environ['TZ'] = 'Asia/Tokyo'
+time.tzset()
 import requests
 import urllib, json
 import matplotlib as mpl
@@ -18,12 +20,12 @@ import numpy as np
 import yaml 
 import socket
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
-fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
+fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
-fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 30)
-font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
-fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 16)
-font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 30)
+font = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 40)
+fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 30)
+font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),12)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -124,7 +126,7 @@ def makeSpark(pricestack):
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
     x = pricestack-np.mean(pricestack)
 
-    fig, ax = plt.subplots(1,1,figsize=(10,3))
+    fig, ax = plt.subplots(1,1,figsize=(11,5))
     plt.plot(x, color='k', linewidth=6)
     plt.plot(len(x)-1, x[-1], color='r', marker='o')
 
@@ -163,12 +165,13 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
         tokenimage = Image.open(tokenfilename)
+        tokenimage = tokenimage.resize((70, 70), Image.LANCZOS)
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         rawimage = requests.get(tokenimageurl).json()
         tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
-        resize = 100,100
+        resize = 70,70
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
         new_image.paste(tokenimage, (10, 10), tokenimage)   
@@ -188,7 +191,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
-        draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
+        draw.text((110,80),str(days_ago)+"day",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
         draw.text((15,200),symbolstring+pricenowstring,font =font,fill = 0)
@@ -204,17 +207,17 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        draw.text((135,85),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+        image.paste(sparkbitmap,(55,0))
+        draw.text((0,75),str(days_ago)+" day "+pricechange,font =font_date,fill = 0)
 
  #.     uncomment the line below to show volume
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        draw.text((135,100),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+        draw.text((0,90),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
-        image.paste(sparkbitmap,(80,25))
-        image.paste(tokenimage, (0,10))
+        image.paste(tokenimage, (0,0))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95,1),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
+        draw.text((152,108),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal

@@ -9,6 +9,8 @@ import logging
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in7
 import time
+os.environ['TZ'] = 'Asia/Tokyo'
+time.tzset()
 import requests
 import urllib, json
 import matplotlib as mpl
