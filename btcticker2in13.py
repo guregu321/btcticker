@@ -207,6 +207,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
+        image.paste(sparkbitmap,(60,10))
         draw.text((0,70),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
 
  #.     uncomment the line below to show volume
@@ -214,10 +215,9 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         draw.text((0,85),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
-        image.paste(sparkbitmap,(60,0))
         image.paste(tokenimage, (0,0))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((140,90),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
+        draw.text((140,100),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
