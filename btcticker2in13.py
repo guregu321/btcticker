@@ -217,7 +217,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
             image.paste(ATHbitmap,(190,85))
         image.paste(tokenimage, (0,0))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((150,110),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
+        draw.text((155,105),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
