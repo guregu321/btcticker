@@ -207,7 +207,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        image.paste(sparkbitmap,(55,10))
+        image.paste(sparkbitmap,(55,0))
         draw.text((0,75),str(days_ago)+" day "+pricechange,font =font_date,fill = 0)
 
  #.     uncomment the line below to show volume
