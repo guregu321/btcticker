@@ -24,7 +24,7 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googl
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 30)
 font = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 40)
-fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 24)
+fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 28)
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
@@ -214,10 +214,10 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         draw.text((0,85),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
-        image.paste(sparkbitmap,(70,25))
+        image.paste(sparkbitmap,(70,0))
         image.paste(tokenimage, (10,10))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((135,0),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
+        draw.text((140,90),str(time.strftime("%b %d   %H:%M", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
