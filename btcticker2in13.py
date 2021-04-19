@@ -169,7 +169,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         rawimage = requests.get(tokenimageurl).json()
         tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
-        resize = 100,100
+        resize = 50,50
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
         new_image.paste(tokenimage, (10, 10), tokenimage)   
@@ -205,17 +205,17 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         epd.init(epd.FULL_UPDATE)
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        draw.text((100,85),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+        draw.text((0,65),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
 
  #.     uncomment the line below to show volume
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        draw.text((100,100),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+        draw.text((0,80),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,25))
-        image.paste(tokenimage, (0,10))
+        image.paste(tokenimage, (0,0))
  #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95,1),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
+        draw.text((95,1),str(time.strftime("%H:%M %a %d %b %Y", time.localtime())),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
