@@ -163,6 +163,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
         tokenimage = Image.open(tokenfilename)
+        tokenimage = Image.resize((50, 50), Image.LANCZOS)
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
